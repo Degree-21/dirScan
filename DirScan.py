@@ -50,6 +50,8 @@ class DirScan:
                 threads = threading.Thread(target=self.scan_dir, args=(key,))
                 threads.start()
 
+        return
+
     # 扫描
     def scan_dir(self, key):
         if 'http://' or 'https://' not in self.scan_host_name:
@@ -66,7 +68,6 @@ class DirScan:
             set_log(msg, file_name)
             print(msg)
             return msg
-
 
     @staticmethod
     def get_user_agent():
