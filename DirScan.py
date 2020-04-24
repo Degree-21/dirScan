@@ -31,7 +31,8 @@ class DirScan:
     # 把所有key放入到队列里面
     def get_all_scan_key(self):
         for key in self.file_list:
-            fd = open(key, "r", encoding='utf-8')
+            fd = open(key, "r",)
+            print(key)
             while 1:
                 buffer = fd.read(1024)
                 if not buffer:
