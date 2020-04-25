@@ -125,6 +125,15 @@ class DirScan:
         for key in range(len(ips)):
             ip_arr[ips[key]] = ports[key]
 
+        # keys = random.choice(list(ip_arr))
+        # port_str = "http://" + keys + ':' + ip_arr[keys]
+        # proxies = {
+        #     'http': port_str
+        # }
+        # print(proxies)
+        # res = requests.get('http://www.baidu.com', proxies=proxies)
+        # print(res)
+
         self.ip_list = ip_arr
         return self.ip_list
 
@@ -150,5 +159,5 @@ if __name__ == "__main__":
 
     dirScan = DirScan(file_path=path, host_name=url)
     dirScan.scan_dir_helps()
-
+    # DirScan.get_ip()
 
