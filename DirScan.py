@@ -13,7 +13,7 @@ class DirScan:
     scan_host_name = ''
     scan_code = [200]
     queues = object
-    limit = 3
+    limit = 8
     ip_list = {}
 
     def __init__(self, host_name='http://www.baidu.com', file_path='./御剑字典'):
@@ -54,7 +54,6 @@ class DirScan:
         while self.queues.qsize() > 0:
             while threading.active_count() < self.limit:
                 key = self.queues.get()
-                print(key)
                 threads = threading.Thread(target=self.scan_dir, args=(key,))
                 threads.start()
 
@@ -81,10 +80,11 @@ class DirScan:
                 set_log(msg, file_name)
                 print(msg)
                 return msg
-        except requests.exceptions.ConnectionError as e:
-            print("链接失败，请更换代理ip")
-        except requests.exceptions.HTTPError as e:
-            print("代理ip无法链接")
+        except Exception as e:
+            print(host_addr, '打开失败 !')
+        #     print(host_addr, "无法访问")
+        # except requests.exceptions.HTTPError as e:
+        #     print("代理ip无法链接")
 
     @staticmethod
     def get_user_agent():
