@@ -4,6 +4,7 @@ import requests
 import threading
 import random
 import re
+import multiprocessing
 from Log import set_log
 
 
@@ -45,17 +46,23 @@ class DirScan:
                     self.queues.put(res)
         return
 
-    # 多线程扫描
+    # 多进程扫描
     def scan_dir_helps(self):
         print("""
             扫描进程创建中........
         """)
+        pool = multiprocessing.Pool(processes=3)
+        list_scan = []
         self.get_all_scan_key()
         while self.queues.qsize() > 0:
-            while threading.active_count() < self.limit:
-                key = self.queues.get()
-                threads = threading.Thread(target=self.scan_dir, args=(key,))
-                threads.start()
+            # while threading.active_count() < self.limit:
+            key = self.queues.get()
+            print(key)
+            list_scan.append(pool.apply_async(self.scan_dir(key)))
+            # , args = (key,)
+        pool.join()
+                # threads = threading.Thread(target=self.scan_dir, args=(key,))
+                # threads.start()
 
     # 扫描
     def scan_dir(self, key):
@@ -64,14 +71,15 @@ class DirScan:
         else:
             host_addr = self.scan_host_name + '/' + key
 
-        keys = random.choice(list(self.ip_list))
-        port_str = keys + ':' + self.ip_list[keys]
-        proxies = {
-            'http': port_str
-        }
-
+        # keys = random.choice(list(self.ip_list))
+        # port_str = keys + ':' + self.ip_list[keys]
+        # proxies = {
+        #     'http': port_str
+        # }
         try:
-            r = requests.get(url=host_addr, headers=self.get_user_agent(), proxies=proxies)
+            # r = requests.get(url=host_addr, headers=self.get_user_agent(), proxies=proxies)
+            r = requests.get(url=host_addr, headers=self.get_user_agent())
+            print (r)
             if r.status_code in self.scan_code:
                 # 写日志
                 msg = {host_addr: r.status_code}
@@ -81,10 +89,7 @@ class DirScan:
                 print(msg)
                 return msg
         except Exception as e:
-            print(host_addr, '打开失败 !')
-        #     print(host_addr, "无法访问")
-        # except requests.exceptions.HTTPError as e:
-        #     print("代理ip无法链接")
+            print(host_addr, "无法访问")
 
     @staticmethod
     def get_user_agent():
