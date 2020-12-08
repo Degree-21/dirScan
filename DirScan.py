@@ -1,5 +1,4 @@
 import queue
-import os
 import requests
 import threading
 import random
@@ -10,14 +9,13 @@ from Log import set_log
 
 class DirScan:
 
-    file_list = []
     scan_host_name = ''
     scan_code = [200]
     queues = object
     limit = 8
     ip_list = {}
 
-    def __init__(self, host_name='http://www.baidu.com', file_path='./御剑字典'):
+    def __init__(self, host_name='http://www.baidu.com', file_path='./御剑字典/'):
         self.scan_host_name = host_name
         self.queues = queue.Queue()
         self.get_all_file(file_path=file_path)
@@ -25,10 +23,7 @@ class DirScan:
 
     # 获取目录下面所有的文件名称
     def get_all_file(self, file_path):
-        file_list = []
-        for root, dirs, files in os.walk(file_path):
-            for key in files:
-                file_list.append(root+'/'+key)
+        file_list = [file_path + file for file in os.listdir(file_path)]
         self.file_list = file_list
         return file_list
 
@@ -67,9 +62,9 @@ class DirScan:
     # 扫描
     def scan_dir(self, key):
         if 'http://' or 'https://' not in self.scan_host_name:
-            host_addr = 'http://' + self.scan_host_name + '/' + key
+            host_addr = f"http://{self.scan_host_name}/{key}"
         else:
-            host_addr = self.scan_host_name + '/' + key
+            host_addr = f"{self.scan_host_name}/{key}"
 
         # keys = random.choice(list(self.ip_list))
         # port_str = keys + ':' + self.ip_list[keys]
@@ -80,6 +75,7 @@ class DirScan:
             # r = requests.get(url=host_addr, headers=self.get_user_agent(), proxies=proxies)
             r = requests.get(url=host_addr, headers=self.get_user_agent())
             print (r)
+            
             if r.status_code in self.scan_code:
                 # 写日志
                 msg = {host_addr: r.status_code}
@@ -88,9 +84,11 @@ class DirScan:
                 set_log(msg, file_name)
                 print(msg)
                 return msg
+            
         except Exception as e:
             print(host_addr, "无法访问")
 
+            
     @staticmethod
     def get_user_agent():
         user_agent_list = [
@@ -118,17 +116,14 @@ class DirScan:
     # 代理ip
     def get_ip(self):
     # def get_ip():
-        ip_arr = {}
-        urls ="https://www.kuaidaili.com/free/inha/1/"
+        urls = "https://www.kuaidaili.com/free/inha/1/"
         str_html = requests.get(urls)
         str_text = str_html.text
         regex = re.compile('<td data-title="IP">(.*)</td>')
         ips = regex.findall(str_text)
         port_regex = re.compile('<td data-title="PORT">(.*)</td>')
         ports = port_regex.findall(str_text)
-
-        for key in range(len(ips)):
-            ip_arr[ips[key]] = ports[key]
+        ip_arr = {ips[key]:ports[key] for key in range(len(ips)) }
 
         # keys = random.choice(list(ip_arr))
         # port_str = "http://" + keys + ':' + ip_arr[keys]
@@ -149,8 +144,9 @@ if __name__ == "__main__":
     try:
         url = sys.argv[1]
         path = sys.argv[2]
-    except :
-        print("param is error !")
+        
+    except:
+        print("param is wrong !")
         os._exit(0)
 
     print("""
