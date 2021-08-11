@@ -2,7 +2,7 @@
 
 ```python
 pip install -r requirements.txt
-python3 ./DirScan.py  www.****.com  ./dictionary
+python3 ./DirScan.py  --url www.****.com  --path ./dictionary
 ```
 
 

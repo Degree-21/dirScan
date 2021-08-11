@@ -25,8 +25,9 @@ class DirScan:
     # 获取目录下面所有的文件名称
     def get_all_file(self, file_path,IsFile):
         if IsFile:
-            self.file_list = file_path        
-            return file_path
+            file_list = list([file_path])
+            self.file_list = file_list        
+            return file_list
         else:
             file_list = [file_path + file for file in os.listdir(file_path)]
             self.file_list = file_list
