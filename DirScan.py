@@ -7,6 +7,7 @@ import multiprocessing
 from Log import set_log
 
 
+
 class DirScan:
 
     scan_host_name = ''
@@ -15,17 +16,21 @@ class DirScan:
     limit = 8
     ip_list = {}
 
-    def __init__(self, host_name='http://www.baidu.com', file_path='./御剑字典/'):
+    def __init__(self, host_name='http://www.baidu.com', file_path='./御剑字典/',IsFile=bool(None)):
         self.scan_host_name = host_name
         self.queues = queue.Queue()
-        self.get_all_file(file_path=file_path)
+        self.get_all_file(file_path=file_path,IsFile=IsFile)
         self.get_ip()
 
     # 获取目录下面所有的文件名称
-    def get_all_file(self, file_path):
-        file_list = [file_path + file for file in os.listdir(file_path)]
-        self.file_list = file_list
-        return file_list
+    def get_all_file(self, file_path,IsFile):
+        if IsFile:
+            self.file_list = file_path        
+            return file_path
+        else:
+            file_list = [file_path + file for file in os.listdir(file_path)]
+            self.file_list = file_list
+            return file_list
 
     # 把所有key放入到队列里面
     def get_all_scan_key(self):
@@ -139,11 +144,18 @@ class DirScan:
 
 
 if __name__ == "__main__":
-    import sys
+    import argparse
     import os
+    parser = argparse.ArgumentParser(description='The script for dirScan')
+
     try:
-        url = sys.argv[1]
-        path = sys.argv[2]
+        parser.add_argument("-url","--url", help='hostname or website name')
+        parser.add_argument("-path","--path",help='directory path')
+        parser.add_argument("-f","--IsFile",help='whether path is file or not',default=False)
+        args = parser.parse_args()
+        url = args.url
+        path = args.path
+        file = args.IsFile
         
     except:
         print("param is wrong !")
@@ -158,7 +170,7 @@ if __name__ == "__main__":
          |____||_|  \__,_||_||_|    |___/ \__,_| \___||_| |_|
     """)
 
-    dirScan = DirScan(file_path=path, host_name=url)
+    dirScan = DirScan(file_path=path, host_name=url, IsFile=file)
     dirScan.scan_dir_helps()
     # DirScan.get_ip()
 
