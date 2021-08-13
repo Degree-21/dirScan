@@ -152,7 +152,7 @@ if __name__ == "__main__":
     try:
         parser.add_argument("-url","--url", help='hostname or website name')
         parser.add_argument("-path","--path",help='directory path')
-        parser.add_argument("-f","--IsFile",help='whether path is file or not',default=False)
+        parser.add_argument("-file","--IsFile",help='whether path is file or not',default=False,action=argparse.BooleanOptionalAction)
         args = parser.parse_args()
         url = args.url
         path = args.path
