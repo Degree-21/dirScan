@@ -30,7 +30,7 @@ class DirScan:
     # 把所有key放入到队列里面
     def get_all_scan_key(self):
         for key in self.file_list:
-            fd = open(key, "r",)
+            fd = open(key, "r", encoding='UTF-8')
             print(key)
             while 1:
                 buffer = fd.read(1024)
@@ -157,7 +157,7 @@ if __name__ == "__main__":
           / /_ | | | (_| || || |    \__ \| (_| || (__ | | | |
          |____||_|  \__,_||_||_|    |___/ \__,_| \___||_| |_|
     """)
-
+    print(f"输入的路径为{path}")
     dirScan = DirScan(file_path=path, host_name=url)
     dirScan.scan_dir_helps()
     # DirScan.get_ip()
