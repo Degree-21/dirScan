@@ -117,7 +117,7 @@ class DirScan:
     def get_ip(self):
     # def get_ip():
         urls = "https://www.kuaidaili.com/free/inha/1/"
-        str_html = requests.get(urls)
+        str_html = requests.get(urls, headers=self.get_user_agent())
         str_text = str_html.text
         regex = re.compile('<td data-title="IP">(.*)</td>')
         ips = regex.findall(str_text)
